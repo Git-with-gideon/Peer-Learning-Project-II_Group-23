@@ -46,6 +46,24 @@ def process_omr_sheet(frame, num_questions, num_options):
         if len(question_bubbles) < num_options:
             detected_answers.append('X')  # No answer detected
             continue
+    # Find the bubble with the most filled area (darkest)
+        max_area = 0
+        selected_option = 'X'
+        
+        for i, (x, y, w, h, area) in enumerate(question_bubbles):
+            if i < len(options):
+                # Calculate the average intensity in the bubble region
+                roi = gray[y:y+h, x:x+w]
+                if roi.size > 0:
+                    avg_intensity = np.mean(roi)
+                    # Lower intensity means darker (more filled)
+                    if avg_intensity < 128 and area > max_area:
+                        max_area = area
+                        selected_option = options[i]
+        
+        detected_answers.append(selected_option)
+    
+    return detected_answers
 # 1. CLI: Get answer key from teacher
 print("Welcome to OptiGrade")
 num_questions = int(input("How many questions do you plan to grade: "))
