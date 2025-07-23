@@ -222,7 +222,19 @@ while True:
                            cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
                 cv2.putText(display_frame, f"Score: {score:.1f}%", (10, 70), 
                            cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-        
+        # Show the frame with results for 3 seconds
+                for _ in range(90):  # 3 seconds at 30 fps
+                    cv2.imshow('OptiGrade - Auto Detection', display_frame)
+                    if cv2.waitKey(33) & 0xFF == ord('q'):  # 33ms = ~30fps
+                        break
+            else:
+                # Draw "No valid OMR detected" on frame
+                cv2.putText(display_frame, "No valid OMR detected", (10, 30), 
+                           cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+        else:
+            # Draw "Looking for OMR..." on frame
+            cv2.putText(display_frame, "Looking for OMR sheet...", (10, 30), 
+                       cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 0), 2)
 
 cap.release()
 cv2.destroyAllWindows()
