@@ -78,6 +78,7 @@ def grade_answers(detected_answers, answer_key):
             correct += 1
     
     return (correct / total) * 100
+    
 def display_results(detected_answers, answer_key, score, num_questions, num_options):
     """
     Display grading results
@@ -110,6 +111,40 @@ def display_results(detected_answers, answer_key, score, num_questions, num_opti
         print(f"Q{i}: {answer}")
     
     # Save results to file
+
+    def save_results_to_file(detected_answers, answer_key, score, num_questions):
+    """
+    Save grading results to a text file
+    """
+    import datetime
+    
+    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"grading_results_{timestamp}.txt"
+    
+    with open(filename, 'w') as f:
+        f.write("OPTIGRADE GRADING RESULTS\n")
+        f.write("=" * 30 + "\n")
+        f.write(f"Date: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+        f.write(f"Score: {score:.1f}% ({int(score/100 * num_questions)}/{num_questions} correct)\n\n")   
+        f.write("DETECTED ANSWERS:\n")
+        f.write("-" * 20 + "\n")
+        for i, answer in enumerate(detected_answers, 1):
+            f.write(f"Q{i}: {answer}\n")
+        
+        f.write("\nANSWER KEY:\n")
+        f.write("-" * 15 + "\n")
+        for i, answer in enumerate(answer_key, 1):
+            f.write(f"Q{i}: {answer}\n")
+        
+        f.write("\nCOMPARISON:\n")
+        f.write("-" * 15 + "\n")
+        for i in range(num_questions):
+            detected = detected_answers[i] if i < len(detected_answers) else 'X'
+            correct = answer_key[i] if i < len(answer_key) else 'X'
+            status = "CORRECT" if detected == correct else "INCORRECT"
+            f.write(f"Q{i+1}: Detected={detected}, Correct={correct}, Status={status}\n")
+    
+    print(f"\nResults saved to: {filename}")
     save_results_to_file(detected_answers, answer_key, score, num_questions)
 # 1. CLI: Get answer key from teacher
 print("Welcome to OptiGrade")
