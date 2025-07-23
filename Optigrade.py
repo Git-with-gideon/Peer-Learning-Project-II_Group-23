@@ -21,6 +21,20 @@ def process_omr_sheet(frame, num_questions, num_options):
     # Find contours
     contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
+    # Filter contours to find potential bubbles
+    bubbles = []
+    for contour in contours:
+        area = cv2.contourArea(contour)
+        if 100 < area < 5000:  # Adjust these values based on your OMR sheet
+            x, y, w, h = cv2.boundingRect(contour)
+            aspect_ratio = w / float(h)
+            if 0.8 < aspect_ratio < 1.2:  # Roughly circular
+                bubbles.append((x, y, w, h, area))
+    
+    if len(bubbles) < num_questions * num_options:
+        print(f"Warning: Found {len(bubbles)} bubbles, expected at least {num_questions * num_options}")
+        return None
+    
 # 1. CLI: Get answer key from teacher
 print("Welcome to OptiGrade")
 num_questions = int(input("How many questions do you plan to grade: "))
