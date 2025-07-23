@@ -78,7 +78,39 @@ def grade_answers(detected_answers, answer_key):
             correct += 1
     
     return (correct / total) * 100
-
+def display_results(detected_answers, answer_key, score, num_questions, num_options):
+    """
+    Display grading results
+    """
+    options_str = ", ".join([chr(65 + i) for i in range(num_options)])
+    print("\n" + "="*50)
+    print("GRADING RESULTS")
+    print("="*50)
+    print(f"Options available: {options_str}")
+    print("-" * 50)
+    
+    print(f"{'Question':<10} {'Detected':<10} {'Correct':<10} {'Status':<10}")
+    print("-" * 40)
+    
+    for i in range(num_questions):
+        detected = detected_answers[i] if i < len(detected_answers) else 'X'
+        correct = answer_key[i] if i < len(answer_key) else 'X'
+        status = "✓" if detected == correct else "✗"
+        
+        print(f"{i+1:<10} {detected:<10} {correct:<10} {status:<10}")
+    
+    print("-" * 40)
+    print(f"Score: {score:.1f}% ({int(score/100 * num_questions)}/{num_questions} correct)")
+    print("="*50)
+    
+    # Display final answers clearly
+    print("\nFINAL DETECTED ANSWERS:")
+    print("-" * 30)
+    for i, answer in enumerate(detected_answers, 1):
+        print(f"Q{i}: {answer}")
+    
+    # Save results to file
+    save_results_to_file(detected_answers, answer_key, score, num_questions)
 # 1. CLI: Get answer key from teacher
 print("Welcome to OptiGrade")
 num_questions = int(input("How many questions do you plan to grade: "))
