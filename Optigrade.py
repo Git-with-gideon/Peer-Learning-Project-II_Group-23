@@ -161,25 +161,25 @@ for idx, ans in enumerate(answer_key, 1):
 
 input("\nPress Enter to begin scanning OMR sheets...")
 
-# 2. Start webcam and capture frame
-cap = cv2.VideoCapture(0)
+# 2. Choose camera source
+print("\nSelect camera source:")
+print("1. Local webcam (default)")
+print("2. IP camera (use your mobile device)")
+source_choice = input("Enter 1 or 2: ").strip()
+
+if source_choice == '2':
+    print("\nTo use your mobile device, install an IP camera app (e.g., IP Webcam for Android, EpocCam for iOS).\n" 
+          "Connect your phone and computer to the same Wi-Fi network. Start the camera server on your phone and enter the video stream URL below (e.g., http://192.168.1.100:8080/video):")
+    ip_camera_url = input("Enter the IP camera stream URL: ").strip()
+    cap = cv2.VideoCapture(ip_camera_url)
+else:
+    cap = cv2.VideoCapture(0)
 if not cap.isOpened():
-    print("Error: Could not open webcam.")
+    print("Error: Could not open the selected camera source.")
     exit()
 
-print("Press 's' to scan an OMR sheet, or 'q' to quit.")
-
-while True:
-    ret, frame = cap.read()
-    if not ret:
-        print("Failed to grab frame.")
-        break
-    cv2.imshow('OptiGrade - Live Camera', frame)
-
-    key = cv2.waitKey(1) & 0xFF
-    if key == ord('q'):
-        break
-    elif key == ord('s'):
+print("Auto-detection mode: Looking for OMR sheets...")
+print("Press 'q' to quit.")
     
         # 3. Placeholder: OMR processing logic goes here
         # For now, just save the frame and print a message
