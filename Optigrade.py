@@ -45,25 +45,40 @@ def process_omr_sheet(frame, num_questions, num_options):
         question_bubbles = bubbles[q*num_options:(q+1)*num_options]
         if len(question_bubbles) < num_options:
             detected_answers.append('X')  # No answer detected
-            continue
+        continue
     # Find the bubble with the most filled area (darkest)
-        max_area = 0
-        selected_option = 'X'
+    max_area = 0
+    selected_option = 'X'
         
-        for i, (x, y, w, h, area) in enumerate(question_bubbles):
-            if i < len(options):
-                # Calculate the average intensity in the bubble region
-                roi = gray[y:y+h, x:x+w]
-                if roi.size > 0:
-                    avg_intensity = np.mean(roi)
+    for i, (x, y, w, h, area) in enumerate(question_bubbles):
+        if i < len(options):
+            # Calculate the average intensity in the bubble region
+            roi = gray[y:y+h, x:x+w]
+            if roi.size > 0:
+                avg_intensity = np.mean(roi)
                     # Lower intensity means darker (more filled)
-                    if avg_intensity < 128 and area > max_area:
+            if avg_intensity < 128 and area > max_area:
                         max_area = area
                         selected_option = options[i]
         
         detected_answers.append(selected_option)
     
     return detected_answers
+
+def grade_answers(detected_answers, answer_key):
+    """
+    Grade the detected answers against the answer key
+    Returns score as percentage
+    """
+    correct = 0
+    total = len(answer_key)
+    
+    for detected, correct_ans in zip(detected_answers, answer_key):
+        if detected == correct_ans:
+            correct += 1
+    
+    return (correct / total) * 100
+
 # 1. CLI: Get answer key from teacher
 print("Welcome to OptiGrade")
 num_questions = int(input("How many questions do you plan to grade: "))
