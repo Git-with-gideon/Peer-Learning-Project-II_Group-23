@@ -34,8 +34,18 @@ def process_omr_sheet(frame, num_questions, num_options):
     if len(bubbles) < num_questions * num_options:
         print(f"Warning: Found {len(bubbles)} bubbles, expected at least {num_questions * num_options}")
         return None
+    # Sort bubbles by position (top to bottom, left to right)
+    bubbles.sort(key=lambda b: (b[1], b[0]))
     
+    # Group bubbles by questions
+    detected_answers = []
+    options = [chr(65 + i) for i in range(num_options)]  # A, B, C, D, E, etc.
     
+    for q in range(num_questions):
+        question_bubbles = bubbles[q*num_options:(q+1)*num_options]
+        if len(question_bubbles) < num_options:
+            detected_answers.append('X')  # No answer detected
+            continue
 # 1. CLI: Get answer key from teacher
 print("Welcome to OptiGrade")
 num_questions = int(input("How many questions do you plan to grade: "))
