@@ -111,7 +111,7 @@ def display_results(detected_answers, answer_key, score, num_questions, num_opti
         print(f"Q{i}: {answer}")
     
     # Save results to file
-
+    save_results_to_file(detected_answers, answer_key, score, num_questions)
     def save_results_to_file(detected_answers, answer_key, score, num_questions):
     """
     Save grading results to a text file
@@ -145,7 +145,7 @@ def display_results(detected_answers, answer_key, score, num_questions, num_opti
             f.write(f"Q{i+1}: Detected={detected}, Correct={correct}, Status={status}\n")
     
     print(f"\nResults saved to: {filename}")
-    save_results_to_file(detected_answers, answer_key, score, num_questions)
+    
 # 1. CLI: Get answer key from teacher
 print("Welcome to OptiGrade")
 num_questions = int(input("How many questions do you plan to grade: "))
