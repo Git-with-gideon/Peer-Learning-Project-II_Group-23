@@ -191,6 +191,24 @@ while True:
     if not ret:
         print("Failed to grab frame.")
         break
+
+        # Create a copy for display
+    display_frame = frame.copy()
+    
+    # Check if enough time has passed since last processing
+    current_time = cv2.getTickCount() / cv2.getTickFrequency()
+    if current_time - last_processed_time > processing_cooldown:
+        # Try to detect OMR sheet
+        detected_answers = process_omr_sheet(frame, num_questions, num_options)
+        
+        if detected_answers:
+            # Check if we have valid answers (not all 'X')
+            valid_answers = [ans for ans in detected_answers if ans != 'X']
+            if len(valid_answers) >= num_questions * 0.5: # At least 50% of questions answered
+                sheet_count += 1
+                last_processed_time = current_time
+                
+                print(f"\n🎯 OMR Sheet #{sheet_count} detected and processed!")
     
         # 3. Placeholder: OMR processing logic goes here
         # For now, just save the frame and print a message
