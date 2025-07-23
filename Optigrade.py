@@ -209,12 +209,20 @@ while True:
                 last_processed_time = current_time
                 
                 print(f"\n🎯 OMR Sheet #{sheet_count} detected and processed!")
-    
-        # 3. Placeholder: OMR processing logic goes here
-        # For now, just save the frame and print a message
-        cv2.imwrite('scanned_omr.jpg', frame)
-        print("OMR sheet captured and saved as 'scanned_omr.jpg'.")
-        print("(OMR processing logic to be implemented here.)")
+                
+    # Save the captured frame
+                cv2.imwrite(f'scanned_omr_{sheet_count}.jpg', frame)
+                
+                # Grade the answers
+                score = grade_answers(detected_answers, answer_key)
+                display_results(detected_answers, answer_key, score, num_questions, num_options)
+                
+                # Add visual feedback on the frame
+                cv2.putText(display_frame, f"Sheet #{sheet_count} Processed!", (10, 30), 
+                           cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                cv2.putText(display_frame, f"Score: {score:.1f}%", (10, 70), 
+                           cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+        
 
 cap.release()
 cv2.destroyAllWindows()
