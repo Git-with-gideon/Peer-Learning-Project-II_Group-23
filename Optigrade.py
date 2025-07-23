@@ -35,6 +35,7 @@ def process_omr_sheet(frame, num_questions, num_options):
         print(f"Warning: Found {len(bubbles)} bubbles, expected at least {num_questions * num_options}")
         return None
     
+    
 # 1. CLI: Get answer key from teacher
 print("Welcome to OptiGrade")
 num_questions = int(input("How many questions do you plan to grade: "))
