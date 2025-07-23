@@ -236,7 +236,14 @@ while True:
             cv2.putText(display_frame, "Looking for OMR sheet...", (10, 30), 
                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 0), 2)
 
+# Show the live frame
+    cv2.imshow('OptiGrade - Auto Detection', display_frame)
+    
+    key = cv2.waitKey(1) & 0xFF
+    if key == ord('q'):
+        break
+
 cap.release()
 cv2.destroyAllWindows()
 
-print("\nThank you for using OptiGrade!")
+print("\nThank you for using OptiGrade!")
