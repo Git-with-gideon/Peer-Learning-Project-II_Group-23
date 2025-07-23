@@ -180,6 +180,17 @@ if not cap.isOpened():
 
 print("Auto-detection mode: Looking for OMR sheets...")
 print("Press 'q' to quit.")
+
+# Variables for auto-detection
+last_processed_time = 0
+processing_cooldown = 3 # seconds between processing attempts
+sheet_count = 0
+
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        print("Failed to grab frame.")
+        break
     
         # 3. Placeholder: OMR processing logic goes here
         # For now, just save the frame and print a message
