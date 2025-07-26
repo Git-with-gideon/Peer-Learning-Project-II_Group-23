@@ -30,3 +30,15 @@ def main():
     except Exception as e:
         print(f"Error initializing database: {e}")
         return False
+     # Check dependencies
+    print("\nChecking dependencies...")
+    required_packages = ['cv2', 'numpy', 'imutils']
+    missing_packages = []
+    
+    for package in required_packages:
+        try:
+            __import__(package)
+            print(f"✓ {package}")
+        except ImportError:
+            print(f"✗ {package} - NOT FOUND")
+            missing_packages.append(package)
