@@ -82,3 +82,40 @@ class OptiGradeFullyAuto:
             return None
         
         return cap
+    
+     def detect_omr_sheet(self, frame):
+        """Detect if an OMR sheet is present in the frame"""
+        try:
+            # Convert to grayscale
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+            edged = cv2.Canny(blurred, 75, 200)
+            
+            # Find contours
+            cnts = cv2.findContours(edged.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            cnts = imutils.grab_contours(cnts)
+            
+            if len(cnts) > 0:
+                # Sort contours by area
+                cnts = sorted(cnts, key=cv2.contourArea, reverse=True)
+                
+                for c in cnts:
+                    peri = cv2.arcLength(c, True)
+                    approx = cv2.approxPolyDP(c, 0.02 * peri, True)
+                    
+                    # Check if it's a quadrilateral (potential OMR sheet)
+                    if len(approx) == 4:
+                        # Calculate area ratio to ensure it's large enough
+                        area = cv2.contourArea(c)
+                        frame_area = frame.shape[0] * frame.shape[1]
+                        area_ratio = area / frame_area
+                        
+                        # Check if the detected area is reasonable (not too small, not too large)
+                        if 0.1 < area_ratio < 0.9:
+                            return True, approx
+            
+            return False, None
+            
+        except Exception as e:
+            print(f"Error in OMR detection: {e}")
+            return False, None
