@@ -26,3 +26,25 @@ This version eliminates **ALL manual intervention** during the scanning process.
 - **Student Names**: `Student_001`, `Student_002`, `Student_003`, etc.
 - **Student IDs**: `STU_20250726_001`, `STU_20250726_002`, etc.
 - **Automatic Incrementing**: Counter increases with each processed sheet
+
+### **3. Continuous Processing**
+- **Real-time Detection**: Continuously monitors camera feed
+- **Instant Processing**: Detects and processes immediately
+- **No Delays**: No waiting for user input
+- **Batch Ready**: Perfect for processing multiple sheets quickly
+
+### **4. Smart Detection**
+- **Area Validation**: Ensures detected object is proper OMR sheet size
+- **Cooldown Protection**: 2-second cooldown prevents duplicate processing
+- **Error Recovery**: Continues scanning if one sheet fails
+- **Quality Control**: Validates bubble count before processing
+
+## 🎮 **How to Use Fully Auto Scanner**
+
+### **Setup (One-time)**
+```bash
+source optigrade_env/bin/activate
+python OptiGrade_FullyAuto.py
+```
+
+### **Operation Flow**
