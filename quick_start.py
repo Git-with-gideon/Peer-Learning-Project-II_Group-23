@@ -75,3 +75,16 @@ Peer-Learning-Project-II_Group-23/
 - ✅ **Intelligent bubble recognition** with pixel density analysis
 - ✅ **Perspective correction** for angled sheets
 - ✅ **Visual feedback** with color-coded results
+### User Experience
+- ✅ **Interactive menu system** for easy navigation
+- ✅ **Comprehensive error handling** with user-friendly messages
+- ✅ **Debug options** for troubleshooting
+- ✅ **Statistics dashboard** for performance analysis
+
+## 🔧 Troubleshooting
+
+### Common Issues
+1. **Camera not working:** Check permissions and ensure no other app is using the camera
+2. **OMR not detected:** Improve lighting and ensure sheet is flat with clear borders
+3. **Database errors:** Run `python setup.py` to reinitialize
+4. **Dependencies missing:** Activate virtual environment and run `pip install -r requirements.txt`
