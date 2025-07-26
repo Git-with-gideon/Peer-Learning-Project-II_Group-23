@@ -22,3 +22,20 @@ def create_database():
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     ''')
+    
+    # Create grading_sessions table
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS grading_sessions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            assignment_id INTEGER,
+            student_name TEXT,
+            student_id TEXT,
+            score REAL NOT NULL,
+            correct_answers INTEGER NOT NULL,
+            total_questions INTEGER NOT NULL,
+            image_path TEXT,  -- Path to saved OMR image
+            processed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (assignment_id) REFERENCES assignments (id)
+        )
+    ''')
+    
