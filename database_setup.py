@@ -38,4 +38,16 @@ def create_database():
             FOREIGN KEY (assignment_id) REFERENCES assignments (id)
         )
     ''')
+     # Create detailed_results table for individual question results
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS detailed_results (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            session_id INTEGER,
+            question_number INTEGER NOT NULL,
+            correct_answer TEXT NOT NULL,
+            student_answer TEXT,
+            is_correct BOOLEAN NOT NULL,
+            FOREIGN KEY (session_id) REFERENCES grading_sessions (id)
+        )
+    ''')
     
