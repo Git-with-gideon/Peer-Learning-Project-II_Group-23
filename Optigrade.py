@@ -222,3 +222,23 @@ class OptiGradeFullyAuto:
         except Exception as e:
             print(f"Error saving image: {e}")
             return None
+        
+    def auto_scan_loop(self, cap):
+        """Main auto-scanning loop - fully automatic"""
+        print("\n" + "=" * 50)
+        print("FULLY AUTOMATIC SCANNING MODE")
+        print("=" * 50)
+        print("Place OMR sheets in front of the camera.")
+        print("The system will automatically detect, process, and grade them.")
+        print("No manual intervention required!")
+        print("Press 'q' to quit, 'p' to pause/resume scanning.")
+        print("=" * 50)
+        
+        self.is_scanning = True
+        detection_count = 0
+        
+        while self.is_scanning:
+            ret, frame = cap.read()
+            if not ret:
+                print("[ERROR] Failed to grab frame.")
+                break
