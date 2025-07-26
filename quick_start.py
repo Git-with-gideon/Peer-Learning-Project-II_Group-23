@@ -39,3 +39,8 @@ python OptiGrade_Enhanced.py
 6. **View results:**
    - Score and detailed breakdown
    - Results automatically saved to database
+### 4. Database Features
+- **View Statistics:** Menu option 2
+- **Export to CSV:** Menu option 3
+- **Track Student Performance:** Menu option 4
+- **Database Viewer:** Run `python database_viewer.py`
