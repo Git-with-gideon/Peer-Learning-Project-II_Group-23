@@ -76,3 +76,12 @@ def detect_omr_sheet(self, frame):
     # 5. Size validation (10-90% of frame)
     # 6. Return detection status
 ```
+
+### **Streamlined Processing Pipeline**
+1. **Frame Capture** → Continuous monitoring
+2. **Sheet Detection** → Instant recognition
+3. **Quality Check** → Automatic validation
+4. **Processing** → No user prompts
+5. **Grading** → Automatic comparison
+6. **Storage** → Database and image archiving
+7. **Continue** → Ready for next sheet
