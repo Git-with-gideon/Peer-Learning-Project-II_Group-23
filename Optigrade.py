@@ -242,3 +242,80 @@ class OptiGradeFullyAuto:
             if not ret:
                 print("[ERROR] Failed to grab frame.")
                 break
+
+             # Create display frame
+            display_frame = frame.copy()
+            
+            # Check if enough time has passed since last detection
+            current_time = time.time()
+            if current_time - self.last_detection_time > self.detection_cooldown:
+                # Try to detect OMR sheet
+                detected, docCnt = self.detect_omr_sheet(frame)
+                
+                if detected:
+                    print(f"\n[INFO] OMR sheet detected! Processing automatically...")
+                    
+                    # Process the detected sheet
+                    result = self.process_omr_sheet(frame, docCnt)
+                    if result[0] is not None:
+                        paper, thresh, questionCnts, error = result
+                        
+                        # Grade the answers
+                        grade_result = self.grade_answers(paper, thresh, questionCnts)
+                        if grade_result[0] is not None:
+                            score, correct, detailed_results, graded_paper = grade_result
+                            
+                            # Auto-generate student information
+                            student_name = f"Student_{self.student_counter:03d}"
+                            student_id = f"STU_{datetime.now().strftime('%Y%m%d')}_{self.student_counter:03d}"
+                            
+                            # Save result image
+                            image_path = self.save_result_image(graded_paper, score)
+                            
+                            # Display results
+                            print(f"\n" + "=" * 30)
+                            print("AUTOMATIC GRADING RESULTS")
+                            print("=" * 30)
+                            print(f"Student: {student_name} (ID: {student_id})")
+                            print(f"Score: {score:.2f}%")
+                            print(f"Correct Answers: {correct}/{self.num_questions}")
+                            
+                            # Show detailed results
+                            print(f"\nDetailed Results:")
+                            for result in detailed_results:
+                                status = "✓" if result['is_correct'] else "✗"
+                                print(f"Q{result['question_number']}: {result['student_answer']} (Correct: {result['correct_answer']}) {status}")
+                            
+                            # Save to database
+                            if self.assignment_id:
+                                session_id = self.db.save_grading_result(
+                                    assignment_id=self.assignment_id,
+                                    student_name=student_name,
+                                    student_id=student_id,
+                                    score=score,
+                                    correct_answers=correct,
+                                    total_questions=self.num_questions,
+                                    image_path=image_path,
+                                    detailed_results=detailed_results
+                                )
+                                
+                                if session_id:
+                                    print(f"\nResults saved to database with session ID: {session_id}")
+                                else:
+                                    print("\nError saving results to database.")
+                            
+                            detection_count += 1
+                            self.student_counter += 1
+                            print(f"\n[SUCCESS] Sheet {detection_count} processed automatically!")
+                            print("Place next sheet or press 'q' to quit.")
+                            
+                            # Update last detection time
+                            self.last_detection_time = current_time
+                            
+                        else:
+                            print(f"[ERROR] Failed to grade answers.")
+                    else:
+                        print(f"[ERROR] Failed to process OMR sheet: {result[3]}")
+                    
+                    # Update last detection time even if processing failed
+                    self.last_detection_time = current_time
