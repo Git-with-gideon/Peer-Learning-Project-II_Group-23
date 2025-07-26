@@ -319,3 +319,109 @@ class OptiGradeFullyAuto:
                     
                     # Update last detection time even if processing failed
                     self.last_detection_time = current_time
+            
+            # Draw detection status on frame
+            status_text = f"Scanning: {'ACTIVE' if self.is_scanning else 'PAUSED'}"
+            cv2.putText(display_frame, status_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+            cv2.putText(display_frame, f"Detections: {detection_count}", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+            cv2.putText(display_frame, f"Next Student: {self.student_counter}", (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+            cv2.putText(display_frame, "Press 'q' to quit, 'p' to pause", (10, display_frame.shape[0] - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+            
+            # Show the frame
+            cv2.imshow("OptiGrade Fully Automatic Scanner", display_frame)
+            
+            # Handle key presses
+            key = cv2.waitKey(1) & 0xFF
+            if key == ord('q'):
+                break
+            elif key == ord('p'):
+                self.is_scanning = not self.is_scanning
+                status = "RESUMED" if self.is_scanning else "PAUSED"
+                print(f"\n[INFO] Scanning {status}")
+        
+        cap.release()
+        cv2.destroyAllWindows()
+        print(f"\n[INFO] Fully automatic scanning completed. Total sheets processed: {detection_count}")
+    
+    def run_fully_auto_session(self):
+        """Run a complete fully automatic grading session"""
+        # Setup assignment
+        self.setup_assignment()
+        
+        # Setup camera
+        cap = self.setup_camera()
+        if cap is None:
+            return
+        
+        # Start fully automatic scanning
+        self.auto_scan_loop(cap)
+
+    def show_statistics(self):
+        """Show grading statistics"""
+        if not self.assignment_id:
+            print("No assignment selected. Please run a grading session first.")
+            return
+        
+        stats = self.db.get_statistics(self.assignment_id)
+        if stats:
+            print("\n" + "=" * 40)
+            print("ASSIGNMENT STATISTICS")
+            print("=" * 40)
+            print(f"Total Sessions: {stats['total_sessions']}")
+            print(f"Average Score: {stats['average_score']:.2f}%")
+            print(f"Highest Score: {stats['max_score']:.2f}%")
+            print(f"Lowest Score: {stats['min_score']:.2f}%")
+            print(f"\nGrade Distribution:")
+            print(f"A (90-100%): {stats['a_grades']}")
+            print(f"B (80-89%): {stats['b_grades']}")
+            print(f"C (70-79%): {stats['c_grades']}")
+            print(f"D (60-69%): {stats['d_grades']}")
+            print(f"F (<60%): {stats['f_grades']}")
+        else:
+            print("No statistics available.")
+
+def main():
+    """Main application entry point"""
+    app = OptiGradeFullyAuto()
+    
+    while True:
+        print("\n" + "=" * 50)
+        print("OPTIGRADE FULLY AUTOMATIC SCANNER")
+        print("=" * 50)
+        print("1. Start Fully Automatic Grading Session")
+        print("2. View Assignment Statistics")
+        print("3. Export Results to CSV")
+        print("4. View Student Results")
+        print("5. Exit")
+        
+        choice = input("\nSelect an option (1-5): ").strip()
+        
+        if choice == '1':
+            app.run_fully_auto_session()
+        elif choice == '2':
+            app.show_statistics()
+        elif choice == '3':
+            if app.assignment_id:
+                filename = app.db.export_results_csv(app.assignment_id)
+                if filename:
+                    print(f"Results exported to: {filename}")
+            else:
+                print("No assignment selected. Please run a grading session first.")
+        elif choice == '4':
+            student_id = input("Enter student ID to view results: ").strip()
+            if student_id:
+                results = app.db.get_student_results(student_id)
+                if results:
+                    print(f"\nResults for student {student_id}:")
+                    for result in results:
+                        print(f"Assignment: {result['assignment_name']}, Score: {result['score']:.2f}%")
+                else:
+                    print(f"No results found for student {student_id}")
+        elif choice == '5':
+            print("Thank you for using OptiGrade Fully Automatic Scanner!")
+            break
+        else:
+            print("Invalid option. Please select 1-5.")
+
+if __name__ == "__main__":
+    main() 
