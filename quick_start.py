@@ -111,3 +111,15 @@ Peer-Learning-Project-II_Group-23/
 - **Performance analytics** with grade distributions
 - **Student progress tracking** over time
 - **Data export** for grade books or LMS integration
+### Key Relationships
+- Each assignment can have multiple grading sessions
+- Each session stores detailed question results
+- Foreign key constraints ensure data integrity
+
+## 🎓 Academic Use Cases
+
+### For Teachers
+- **Batch grading** of multiple-choice assignments
+- **Performance analytics** with grade distributions
+- **Student progress tracking** over time
+- **Data export** for grade books or LMS integration
