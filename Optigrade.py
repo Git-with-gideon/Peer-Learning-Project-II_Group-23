@@ -152,7 +152,7 @@ class OptiGradeFullyAuto:
         except Exception as e:
             return None, None, None, f"Error processing OMR: {e}"
         
-      def grade_answers(self, paper, thresh, questionCnts):
+    def grade_answers(self, paper, thresh, questionCnts):
         """Grade the answers and return results"""
         try:
             questionCnts = contours.sort_contours(questionCnts, method="top-to-bottom")[0]
@@ -202,3 +202,23 @@ class OptiGradeFullyAuto:
         except Exception as e:
             print(f"Error grading answers: {e}")
             return None, None, None, None
+    
+    def save_result_image(self, paper, score):
+        """Save the result image with score overlay"""
+        try:
+            # Create images directory if it doesn't exist
+            os.makedirs('images', exist_ok=True)
+            
+            # Add score text to image
+            cv2.putText(paper, f"{score:.2f}%", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)
+            
+            # Save image with timestamp
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            image_path = f"images/omr_result_{timestamp}.jpg"
+            cv2.imwrite(image_path, paper)
+            
+            return image_path
+            
+        except Exception as e:
+            print(f"Error saving image: {e}")
+            return None
