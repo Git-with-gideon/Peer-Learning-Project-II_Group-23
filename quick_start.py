@@ -88,3 +88,14 @@ Peer-Learning-Project-II_Group-23/
 2. **OMR not detected:** Improve lighting and ensure sheet is flat with clear borders
 3. **Database errors:** Run `python setup.py` to reinitialize
 4. **Dependencies missing:** Activate virtual environment and run `pip install -r requirements.txt`
+### Debug Features
+- Use debug option to view thresholded image
+- Check detailed error messages in console
+- Database viewer for exploring stored data
+
+## 📊 Database Schema
+
+### Tables
+- **assignments:** Store assignment configurations and answer keys
+- **grading_sessions:** Store individual grading results
+- **detailed_results:** Store question-by-question analysis
