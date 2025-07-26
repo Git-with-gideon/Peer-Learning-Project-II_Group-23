@@ -114,3 +114,17 @@ def detect_omr_sheet(self, frame):
 - **Automated workflows** in educational institutions
 - **Batch processing** without user intervention
 - **Professional grading** services
+
+### **Workflow Example:**
+1. **Setup assignment** (5 minutes)
+2. **Start scanning** (1 minute)
+3. **Process 50 students** (10-15 minutes)
+4. **Export results** (1 minute)
+5. **Total time**: ~20 minutes for 50 students!
+
+## 🚀 **Getting Started**
+
+### **Quick Start**
+```bash
+# Run the fully automatic scanner
+python OptiGrade_FullyAuto.py
