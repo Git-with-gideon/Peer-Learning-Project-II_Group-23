@@ -55,3 +55,53 @@ class OptiGradeDatabase:
         try:
             conn = self._get_connection()
             cursor = conn.cursor()
+                       
+            # Save main grading session
+            cursor.execute('''
+                INSERT INTO grading_sessions 
+                (assignment_id, student_name, student_id, score, correct_answers, total_questions, image_path)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            ''', (assignment_id, student_name, student_id, score, correct_answers, total_questions, image_path))
+            
+            session_id = cursor.lastrowid
+            
+            # Save detailed results if provided
+            if detailed_results:
+                for result in detailed_results:
+                    cursor.execute('''
+                        INSERT INTO detailed_results 
+                        (session_id, question_number, correct_answer, student_answer, is_correct)
+                        VALUES (?, ?, ?, ?, ?)
+                    ''', (session_id, result['question_number'], result['correct_answer'], 
+                         result['student_answer'], result['is_correct']))
+            
+            conn.commit()
+            conn.close()
+            
+            print(f"Grading result saved for student {student_name} (ID: {student_id})")
+            return session_id
+            
+        except Exception as e:
+            print(f"Error saving grading result: {e}")
+            return None
+    
+    def get_assignment(self, assignment_id: int) -> Optional[Dict]:
+        """Retrieve assignment by ID"""
+        try:
+            conn = self._get_connection()
+            cursor = conn.cursor()
+            
+            cursor.execute('SELECT * FROM assignments WHERE id = ?', (assignment_id,))
+            row = cursor.fetchone()
+            
+            conn.close()
+            
+            if row:
+                assignment = dict(row)
+                assignment['answer_key'] = json.loads(assignment['answer_key'])
+                return assignment
+            return None
+            
+        except Exception as e:
+            print(f"Error retrieving assignment: {e}")
+            return None
