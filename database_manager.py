@@ -192,4 +192,51 @@ class OptiGradeDatabase:
             conn.close()
             
             return results
+                        
+        except Exception as e:
+            print(f"Error retrieving detailed results: {e}")
+            return []
+    
+    def get_statistics(self, assignment_id: int = None) -> Dict:
+        """Get grading statistics"""
+        try:
+            conn = self._get_connection()
+            cursor = conn.cursor()
+            
+            if assignment_id:
+                # Statistics for specific assignment
+                cursor.execute('''
+                    SELECT 
+                        COUNT(*) as total_sessions,
+                        AVG(score) as average_score,
+                        MIN(score) as min_score,
+                        MAX(score) as max_score,
+                        COUNT(CASE WHEN score >= 90 THEN 1 END) as a_grades,
+                        COUNT(CASE WHEN score >= 80 AND score < 90 THEN 1 END) as b_grades,
+                        COUNT(CASE WHEN score >= 70 AND score < 80 THEN 1 END) as c_grades,
+                        COUNT(CASE WHEN score >= 60 AND score < 70 THEN 1 END) as d_grades,
+                        COUNT(CASE WHEN score < 60 THEN 1 END) as f_grades
+                    FROM grading_sessions 
+                    WHERE assignment_id = ?
+                ''', (assignment_id,))
+            else:
+                # Overall statistics
+                cursor.execute('''
+                    SELECT 
+                        COUNT(*) as total_sessions,
+                        AVG(score) as average_score,
+                        MIN(score) as min_score,
+                        MAX(score) as max_score,
+                        COUNT(CASE WHEN score >= 90 THEN 1 END) as a_grades,
+                        COUNT(CASE WHEN score >= 80 AND score < 90 THEN 1 END) as b_grades,
+                        COUNT(CASE WHEN score >= 70 AND score < 80 THEN 1 END) as c_grades,
+                        COUNT(CASE WHEN score >= 60 AND score < 70 THEN 1 END) as d_grades,
+                        COUNT(CASE WHEN score < 60 THEN 1 END) as f_grades
+                    FROM grading_sessions
+                ''')
+            
+            stats = dict(cursor.fetchone())
+            conn.close()
+            
+            return stats
             
