@@ -187,3 +187,66 @@ def view_session_details(db, session_id):
 def export_data_menu(db):
     """Menu for data export options"""
     print_separator()
+    print("DATA EXPORT OPTIONS")
+    print_separator()
+    
+    try:
+        conn = sqlite3.connect(db.db_path)
+        cursor = conn.cursor()
+        
+        # Get all assignments
+        cursor.execute('SELECT id, assignment_name FROM assignments ORDER BY assignment_name')
+        assignments = cursor.fetchall()
+        
+        if not assignments:
+            print("No assignments available for export.")
+            return
+        
+        print("Available assignments for export:")
+        for assignment in assignments:
+            print(f"  {assignment[0]}: {assignment[1]}")
+        
+        assignment_id = input("\nEnter assignment ID to export (or press Enter to cancel): ").strip()
+        if not assignment_id:
+            return
+        
+        try:
+            assignment_id = int(assignment_id)
+            filename = db.export_results_csv(assignment_id)
+            if filename:
+                print(f"Data exported successfully to: {filename}")
+            else:
+                print("Export failed.")
+        except ValueError:
+            print("Invalid assignment ID.")
+        
+        conn.close()
+        
+    except Exception as e:
+        print(f"Error in export menu: {e}")
+
+def main():
+    """Main database viewer interface"""
+    print("OptiGrade Database Viewer")
+    print("=" * 60)
+    
+    # Initialize database
+    db = OptiGradeDatabase()
+    
+    while True:
+        print("\n" + "=" * 60)
+        print("DATABASE VIEWER MENU")
+        print("=" * 60)
+        print("1. View All Assignments")
+        print("2. View Assignment Details")
+        print("3. View Recent Grading Sessions")
+        print("4. View Student Performance")
+        print("5. View Session Details")
+        print("6. Export Data to CSV")
+        print("7. View Database Statistics")
+        print("8. Exit")
+        
+        choice = input("\nSelect an option (1-8): ").strip()
+        
+        if choice == '1':
+            view_all_assignments(db)
