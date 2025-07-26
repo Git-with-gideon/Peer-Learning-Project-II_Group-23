@@ -128,3 +128,16 @@ def detect_omr_sheet(self, frame):
 ```bash
 # Run the fully automatic scanner
 python OptiGrade_FullyAuto.py
+
+# Select option 1 for fully automatic session
+# Enter assignment details once
+# Start placing OMR sheets
+# Watch the system work automatically!
+```
+
+### **Tips for Best Results**
+1. **Good lighting** - Ensure consistent illumination
+2. **Clear background** - Avoid cluttered surfaces
+3. **Consistent positioning** - Place sheets in same area
+4. **Quality sheets** - Use clear, well-printed forms
+5. **Steady camera** - Minimize movement during scanning
