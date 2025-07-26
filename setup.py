@@ -42,3 +42,20 @@ def main():
         except ImportError:
             print(f"✗ {package} - NOT FOUND")
             missing_packages.append(package)
+    if missing_packages:
+        print(f"\nMissing packages: {', '.join(missing_packages)}")
+        print("Please install missing packages using:")
+        print("pip install -r requirements.txt")
+        return False
+    
+    print("\nSetup completed successfully!")
+    print("\nYou can now run the application using:")
+    print("python OptiGrade_Enhanced.py")
+    print("\nOr view the database using:")
+    print("python database_viewer.py")
+    
+    return True
+
+if __name__ == "__main__":
+    success = main()
+    sys.exit(0 if success else 1) 
