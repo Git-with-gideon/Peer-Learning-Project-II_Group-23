@@ -50,4 +50,19 @@ def create_database():
             FOREIGN KEY (session_id) REFERENCES grading_sessions (id)
         )
     ''')
+    # Create indexes for better performance
+    cursor.execute('CREATE INDEX IF NOT EXISTS idx_sessions_assignment ON grading_sessions(assignment_id)')
+    cursor.execute('CREATE INDEX IF NOT EXISTS idx_sessions_student ON grading_sessions(student_id)')
+    cursor.execute('CREATE INDEX IF NOT EXISTS idx_detailed_session ON detailed_results(session_id)')
     
+    conn.commit()
+    conn.close()
+    
+    print("Database created successfully!")
+    print("Tables created:")
+    print("- assignments: Store assignment configurations")
+    print("- grading_sessions: Store grading session results")
+    print("- detailed_results: Store individual question results")
+
+if __name__ == "__main__":
+    create_database() 
