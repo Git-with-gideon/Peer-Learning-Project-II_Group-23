@@ -63,3 +63,16 @@ python OptiGrade_FullyAuto.py
 4. **Database Storage** → Saves results automatically
 5. **Image Archiving** → Saves processed sheet with results
 6. **Ready for Next** → Continues scanning for next sheet
+
+## 🔧 **Technical Improvements**
+
+### **Enhanced Detection Algorithm**
+```python
+def detect_omr_sheet(self, frame):
+    # 1. Grayscale conversion and blur
+    # 2. Edge detection with optimized parameters
+    # 3. Contour analysis with area validation
+    # 4. Quadrilateral detection (4 corners)
+    # 5. Size validation (10-90% of frame)
+    # 6. Return detection status
+```
