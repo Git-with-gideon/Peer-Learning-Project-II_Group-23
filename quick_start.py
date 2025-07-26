@@ -22,3 +22,20 @@ source optigrade_env/bin/activate
 # Start the enhanced application
 python OptiGrade_Enhanced.py
 ```
+### 3. Basic Usage Flow
+1. **Select "1. Start New Grading Session"**
+2. **Enter assignment details:**
+   - Assignment name (e.g., "Math Quiz 1")
+   - Number of questions
+   - Correct answers (A-E) for each question
+3. **Choose camera source:**
+   - Local webcam (option 1)
+   - IP camera from mobile device (option 2)
+4. **Capture OMR sheet:**
+   - Position sheet in camera view
+   - Press 's' to capture
+5. **Enter student information:**
+   - Student name and ID
+6. **View results:**
+   - Score and detailed breakdown
+   - Results automatically saved to database
