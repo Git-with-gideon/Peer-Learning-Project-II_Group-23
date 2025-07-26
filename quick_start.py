@@ -123,3 +123,7 @@ Peer-Learning-Project-II_Group-23/
 - **Performance analytics** with grade distributions
 - **Student progress tracking** over time
 - **Data export** for grade books or LMS integration
+### For Students
+- **Immediate feedback** on quiz performance
+- **Detailed breakdown** of correct/incorrect answers
+- **Performance history** across multiple assignments
