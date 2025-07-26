@@ -379,3 +379,49 @@ class OptiGradeFullyAuto:
             print(f"F (<60%): {stats['f_grades']}")
         else:
             print("No statistics available.")
+
+def main():
+    """Main application entry point"""
+    app = OptiGradeFullyAuto()
+    
+    while True:
+        print("\n" + "=" * 50)
+        print("OPTIGRADE FULLY AUTOMATIC SCANNER")
+        print("=" * 50)
+        print("1. Start Fully Automatic Grading Session")
+        print("2. View Assignment Statistics")
+        print("3. Export Results to CSV")
+        print("4. View Student Results")
+        print("5. Exit")
+        
+        choice = input("\nSelect an option (1-5): ").strip()
+        
+        if choice == '1':
+            app.run_fully_auto_session()
+        elif choice == '2':
+            app.show_statistics()
+        elif choice == '3':
+            if app.assignment_id:
+                filename = app.db.export_results_csv(app.assignment_id)
+                if filename:
+                    print(f"Results exported to: {filename}")
+            else:
+                print("No assignment selected. Please run a grading session first.")
+        elif choice == '4':
+            student_id = input("Enter student ID to view results: ").strip()
+            if student_id:
+                results = app.db.get_student_results(student_id)
+                if results:
+                    print(f"\nResults for student {student_id}:")
+                    for result in results:
+                        print(f"Assignment: {result['assignment_name']}, Score: {result['score']:.2f}%")
+                else:
+                    print(f"No results found for student {student_id}")
+        elif choice == '5':
+            print("Thank you for using OptiGrade Fully Automatic Scanner!")
+            break
+        else:
+            print("Invalid option. Please select 1-5.")
+
+if __name__ == "__main__":
+    main() 
