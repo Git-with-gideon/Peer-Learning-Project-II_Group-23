@@ -14,3 +14,11 @@ pip install -r requirements.txt
 # Initialize database
 python setup.py
 ```
+### 2. Run the Application
+```bash
+# Activate virtual environment (if not already active)
+source optigrade_env/bin/activate
+
+# Start the enhanced application
+python OptiGrade_Enhanced.py
+```
