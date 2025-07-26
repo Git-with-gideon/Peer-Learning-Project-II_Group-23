@@ -99,3 +99,18 @@ def detect_omr_sheet(self, frame):
 - **Zero user intervention** during processing
 - **Continuous operation** without breaks
 - **Batch processing** optimized for large classes
+
+### **Efficiency Gains**
+- **No manual input** required during scanning
+- **Automatic student management** 
+- **Seamless workflow** from setup to completion
+- **Professional-grade** automation
+
+## 🎓 **Perfect Use Cases**
+
+### **Ideal For:**
+- **Large class grading** (50+ students)
+- **High-volume processing** (multiple assignments)
+- **Automated workflows** in educational institutions
+- **Batch processing** without user intervention
+- **Professional grading** services
