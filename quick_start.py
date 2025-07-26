@@ -44,3 +44,18 @@ python OptiGrade_Enhanced.py
 - **Export to CSV:** Menu option 3
 - **Track Student Performance:** Menu option 4
 - **Database Viewer:** Run `python database_viewer.py`
+## 📁 Project Structure
+```
+Peer-Learning-Project-II_Group-23/
+├── OptiGrade_Enhanced.py        # Main application with database
+├── database_manager.py          # Database operations
+├── database_setup.py           # Database initialization
+├── database_viewer.py          # Database exploration tool
+├── setup.py                    # Complete setup script
+├── requirements.txt            # Python dependencies
+├── README.md                   # Comprehensive documentation
+├── data/                       # Database storage
+│   └── optigrade.db           # SQLite database
+├── images/                     # Archived OMR result images
+└── optigrade_env/             # Python virtual environment
+```
