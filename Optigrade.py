@@ -151,3 +151,54 @@ class OptiGradeFullyAuto:
             
         except Exception as e:
             return None, None, None, f"Error processing OMR: {e}"
+        
+      def grade_answers(self, paper, thresh, questionCnts):
+        """Grade the answers and return results"""
+        try:
+            questionCnts = contours.sort_contours(questionCnts, method="top-to-bottom")[0]
+            correct = 0
+            detailed_results = []
+            
+            for (q, i) in enumerate(np.arange(0, len(questionCnts), 5)):
+                if i + 5 > len(questionCnts):
+                    break
+                    
+                cnts = contours.sort_contours(questionCnts[i:i + 5])[0]
+                bubbled = None
+                
+                for (j, c) in enumerate(cnts):
+                    mask = np.zeros(thresh.shape, dtype="uint8")
+                    cv2.drawContours(mask, [c], -1, 255, -1)
+                    mask = cv2.bitwise_and(thresh, thresh, mask=mask)
+                    total = cv2.countNonZero(mask)
+                    if bubbled is None or total > bubbled[0]:
+                        bubbled = (total, j)
+                
+                color = (0, 0, 255)
+                k = self.answer_key.get(q, None)
+                
+                if k is not None and bubbled is not None:
+                    correct_answer = 'ABCDE'[k]
+                    student_answer = 'ABCDE'[bubbled[1]]
+                    is_correct = k == bubbled[1]
+                    
+                    if is_correct:
+                        color = (0, 255, 0)
+                        correct += 1
+                    
+                    # Store detailed result
+                    detailed_results.append({
+                        'question_number': q + 1,
+                        'correct_answer': correct_answer,
+                        'student_answer': student_answer,
+                        'is_correct': is_correct
+                    })
+                    
+                    cv2.drawContours(paper, [cnts[k]], -1, color, 3)
+            
+            score = (correct / float(self.num_questions)) * 100
+            return score, correct, detailed_results, paper
+            
+        except Exception as e:
+            print(f"Error grading answers: {e}")
+            return None, None, None, None
