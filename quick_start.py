@@ -127,3 +127,12 @@ Peer-Learning-Project-II_Group-23/
 - **Immediate feedback** on quiz performance
 - **Detailed breakdown** of correct/incorrect answers
 - **Performance history** across multiple assignments
+## 🔒 Data Security
+- **Local storage** - all data stays on your computer
+- **Input validation** - all user inputs are sanitized
+- **Error handling** - graceful failure with data protection
+- **Backup capability** - database can be easily backed up
+
+---
+
+**Ready to start?** Run `python OptiGrade_Enhanced.py` and select option 1 to begin your first grading session! 
