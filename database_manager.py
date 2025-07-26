@@ -105,3 +105,91 @@ class OptiGradeDatabase:
         except Exception as e:
             print(f"Error retrieving assignment: {e}")
             return None
+                
+    def get_grading_session(self, session_id: int) -> Optional[Dict]:
+        """Retrieve grading session by ID"""
+        try:
+            conn = self._get_connection()
+            cursor = conn.cursor()
+            
+            cursor.execute('''
+                SELECT gs.*, a.assignment_name 
+                FROM grading_sessions gs
+                JOIN assignments a ON gs.assignment_id = a.id
+                WHERE gs.id = ?
+            ''', (session_id,))
+            
+            row = cursor.fetchone()
+            conn.close()
+            
+            if row:
+                return dict(row)
+            return None
+            
+        except Exception as e:
+            print(f"Error retrieving grading session: {e}")
+            return None
+    
+    def get_student_results(self, student_id: str) -> List[Dict]:
+        """Get all results for a specific student"""
+        try:
+            conn = self._get_connection()
+            cursor = conn.cursor()
+            
+            cursor.execute('''
+                SELECT gs.*, a.assignment_name 
+                FROM grading_sessions gs
+                JOIN assignments a ON gs.assignment_id = a.id
+                WHERE gs.student_id = ?
+                ORDER BY gs.processed_at DESC
+            ''', (student_id,))
+            
+            results = [dict(row) for row in cursor.fetchall()]
+            conn.close()
+            
+            return results
+            
+        except Exception as e:
+            print(f"Error retrieving student results: {e}")
+            return []
+    
+    def get_assignment_results(self, assignment_id: int) -> List[Dict]:
+        """Get all results for a specific assignment"""
+        try:
+            conn = self._get_connection()
+            cursor = conn.cursor()
+            
+            cursor.execute('''
+                SELECT gs.*, a.assignment_name 
+                FROM grading_sessions gs
+                JOIN assignments a ON gs.assignment_id = a.id
+                WHERE gs.assignment_id = ?
+                ORDER BY gs.processed_at DESC
+            ''', (assignment_id,))
+            
+            results = [dict(row) for row in cursor.fetchall()]
+            conn.close()
+            
+            return results
+            
+        except Exception as e:
+            print(f"Error retrieving assignment results: {e}")
+            return []
+    
+    def get_detailed_results(self, session_id: int) -> List[Dict]:
+        """Get detailed question-by-question results for a session"""
+        try:
+            conn = self._get_connection()
+            cursor = conn.cursor()
+            
+            cursor.execute('''
+                SELECT * FROM detailed_results 
+                WHERE session_id = ?
+                ORDER BY question_number
+            ''', (session_id,))
+            
+            results = [dict(row) for row in cursor.fetchall()]
+            conn.close()
+            
+            return results
+            
