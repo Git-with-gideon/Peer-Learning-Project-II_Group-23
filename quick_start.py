@@ -59,3 +59,19 @@ Peer-Learning-Project-II_Group-23/
 ├── images/                     # Archived OMR result images
 └── optigrade_env/             # Python virtual environment
 ```
+## 🎯 Key Features
+
+### Database Integration
+- ✅ **Efficient SQLite database** with proper schema design
+- ✅ **Assignment management** with answer key storage
+- ✅ **Student performance tracking** across multiple assignments
+- ✅ **Detailed analytics** with grade distributions
+- ✅ **Data export** to CSV format
+- ✅ **Image archiving** of graded OMR sheets
+
+### Computer Vision
+- ✅ **Automatic OMR detection** using contour analysis
+- ✅ **Real-time camera integration** (webcam + mobile IP camera)
+- ✅ **Intelligent bubble recognition** with pixel density analysis
+- ✅ **Perspective correction** for angled sheets
+- ✅ **Visual feedback** with color-coded results
