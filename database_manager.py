@@ -239,4 +239,34 @@ class OptiGradeDatabase:
             conn.close()
             
             return stats
+                     
+        except Exception as e:
+            print(f"Error retrieving statistics: {e}")
+            return {}
+    
+    def export_results_csv(self, assignment_id: int, filename: str = None) -> str:
+        """Export assignment results to CSV"""
+        try:
+            import csv
+            
+            if not filename:
+                filename = f"assignment_{assignment_id}_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+            
+            results = self.get_assignment_results(assignment_id)
+            
+            with open(filename, 'w', newline='') as csvfile:
+                fieldnames = ['student_id', 'student_name', 'score', 'correct_answers', 
+                             'total_questions', 'processed_at', 'assignment_name']
+                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+                
+                writer.writeheader()
+                for result in results:
+                    writer.writerow(result)
+            
+            print(f"Results exported to {filename}")
+            return filename
+            
+        except Exception as e:
+            print(f"Error exporting results: {e}")
+            return None 
             
