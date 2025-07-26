@@ -15,3 +15,18 @@ def main():
     
     # Create necessary directories
     directories = ['data', 'images']
+    for directory in directories:
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+            print(f"Created directory: {directory}")
+        else:
+            print(f"Directory already exists: {directory}")
+    
+    # Initialize database
+    print("\nInitializing database...")
+    try:
+        create_database()
+        print("Database initialized successfully!")
+    except Exception as e:
+        print(f"Error initializing database: {e}")
+        return False
