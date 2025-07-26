@@ -13,3 +13,16 @@ This version eliminates **ALL manual intervention** during the scanning process.
 | **Threshold Prompt** | Manual yes/no | Manual yes/no | **No prompts** |
 | **Processing** | Step-by-step | Semi-automatic | **Completely automatic** |
 | **Intervention** | Full manual control | Some manual input | **Zero intervention** |
+
+## 🎯 **Fully Automatic Features**
+
+### **1. Zero Manual Prompts**
+- ❌ No "Show thresholded image?" prompts
+- ❌ No manual student name/ID input
+- ❌ No manual scan triggers
+- ✅ **Completely hands-free operation**
+
+### **2. Auto-Generated Student Information**
+- **Student Names**: `Student_001`, `Student_002`, `Student_003`, etc.
+- **Student IDs**: `STU_20250726_001`, `STU_20250726_002`, etc.
+- **Automatic Incrementing**: Counter increases with each processed sheet
