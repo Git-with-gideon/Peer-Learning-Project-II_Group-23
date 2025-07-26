@@ -355,3 +355,27 @@ class OptiGradeFullyAuto:
         
         # Start fully automatic scanning
         self.auto_scan_loop(cap)
+
+    def show_statistics(self):
+        """Show grading statistics"""
+        if not self.assignment_id:
+            print("No assignment selected. Please run a grading session first.")
+            return
+        
+        stats = self.db.get_statistics(self.assignment_id)
+        if stats:
+            print("\n" + "=" * 40)
+            print("ASSIGNMENT STATISTICS")
+            print("=" * 40)
+            print(f"Total Sessions: {stats['total_sessions']}")
+            print(f"Average Score: {stats['average_score']:.2f}%")
+            print(f"Highest Score: {stats['max_score']:.2f}%")
+            print(f"Lowest Score: {stats['min_score']:.2f}%")
+            print(f"\nGrade Distribution:")
+            print(f"A (90-100%): {stats['a_grades']}")
+            print(f"B (80-89%): {stats['b_grades']}")
+            print(f"C (70-79%): {stats['c_grades']}")
+            print(f"D (60-69%): {stats['d_grades']}")
+            print(f"F (<60%): {stats['f_grades']}")
+        else:
+            print("No statistics available.")
