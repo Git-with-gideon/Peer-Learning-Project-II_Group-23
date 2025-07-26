@@ -124,3 +124,66 @@ def view_recent_sessions(db, limit=10):
 def view_student_performance(db, student_id):
     """View performance history for a specific student"""
     print_separator()
+    print(f"STUDENT PERFORMANCE - ID: {student_id}")
+    print_separator()
+    
+    try:
+        results = db.get_student_results(student_id)
+        
+        if not results:
+            print(f"No results found for student {student_id}")
+            return
+        
+        # Group by student name
+        student_name = results[0]['student_name']
+        print(f"Student Name: {student_name}")
+        print(f"Student ID: {student_id}")
+        print(f"Total Assignments: {len(results)}")
+        
+        total_score = sum(r['score'] for r in results)
+        avg_score = total_score / len(results)
+        print(f"Average Score: {avg_score:.2f}%")
+        
+        print(f"\nAssignment History:")
+        for result in results:
+            print(f"  {result['assignment_name']}: {result['score']:.2f}% ({result['processed_at']})")
+        
+    except Exception as e:
+        print(f"Error viewing student performance: {e}")
+
+def view_session_details(db, session_id):
+    """View detailed results for a specific grading session"""
+    print_separator()
+    print(f"SESSION DETAILS - ID: {session_id}")
+    print_separator()
+    
+    try:
+        session = db.get_grading_session(session_id)
+        if not session:
+            print(f"Session with ID {session_id} not found.")
+            return
+        
+        print(f"Student: {session['student_name']} (ID: {session['student_id']})")
+        print(f"Assignment: {session['assignment_name']}")
+        print(f"Score: {session['score']:.2f}%")
+        print(f"Correct Answers: {session['correct_answers']}/{session['total_questions']}")
+        print(f"Processed: {session['processed_at']}")
+        
+        if session['image_path']:
+            print(f"Image: {session['image_path']}")
+        
+        # Get detailed question results
+        detailed_results = db.get_detailed_results(session_id)
+        if detailed_results:
+            print(f"\nQuestion-by-Question Results:")
+            for result in detailed_results:
+                status = "✓" if result['is_correct'] else "✗"
+                print(f"  Q{result['question_number']}: {result['student_answer']} "
+                      f"(Correct: {result['correct_answer']}) {status}")
+        
+    except Exception as e:
+        print(f"Error viewing session details: {e}")
+
+def export_data_menu(db):
+    """Menu for data export options"""
+    print_separator()
