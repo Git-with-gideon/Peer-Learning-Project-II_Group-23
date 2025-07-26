@@ -250,3 +250,65 @@ def main():
         
         if choice == '1':
             view_all_assignments(db)
+        
+        elif choice == '2':
+            assignment_id = input("Enter assignment ID: ").strip()
+            if assignment_id:
+                try:
+                    view_assignment_details(db, int(assignment_id))
+                except ValueError:
+                    print("Invalid assignment ID.")
+        
+        elif choice == '3':
+            limit = input("Enter number of recent sessions to view (default 10): ").strip()
+            try:
+                limit = int(limit) if limit else 10
+                view_recent_sessions(db, limit)
+            except ValueError:
+                print("Invalid number.")
+        
+        elif choice == '4':
+            student_id = input("Enter student ID: ").strip()
+            if student_id:
+                view_student_performance(db, student_id)
+        
+        elif choice == '5':
+            session_id = input("Enter session ID: ").strip()
+            if session_id:
+                try:
+                    view_session_details(db, int(session_id))
+                except ValueError:
+                    print("Invalid session ID.")
+        
+        elif choice == '6':
+            export_data_menu(db)
+        
+        elif choice == '7':
+            print_separator()
+            print("DATABASE STATISTICS")
+            print_separator()
+            
+            stats = db.get_statistics()
+            if stats and stats['total_sessions'] > 0:
+                print(f"Total Grading Sessions: {stats['total_sessions']}")
+                print(f"Overall Average Score: {stats['average_score']:.2f}%")
+                print(f"Highest Score: {stats['max_score']:.2f}%")
+                print(f"Lowest Score: {stats['min_score']:.2f}%")
+                print(f"\nGrade Distribution:")
+                print(f"  A (90-100%): {stats['a_grades']}")
+                print(f"  B (80-89%): {stats['b_grades']}")
+                print(f"  C (70-79%): {stats['c_grades']}")
+                print(f"  D (60-69%): {stats['d_grades']}")
+                print(f"  F (<60%): {stats['f_grades']}")
+            else:
+                print("No data available for statistics.")
+        
+        elif choice == '8':
+            print("Thank you for using the OptiGrade Database Viewer!")
+            break
+        
+        else:
+            print("Invalid option. Please select 1-8.")
+
+if __name__ == "__main__":
+    main() 
