@@ -319,3 +319,39 @@ class OptiGradeFullyAuto:
                     
                     # Update last detection time even if processing failed
                     self.last_detection_time = current_time
+            
+            # Draw detection status on frame
+            status_text = f"Scanning: {'ACTIVE' if self.is_scanning else 'PAUSED'}"
+            cv2.putText(display_frame, status_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+            cv2.putText(display_frame, f"Detections: {detection_count}", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+            cv2.putText(display_frame, f"Next Student: {self.student_counter}", (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+            cv2.putText(display_frame, "Press 'q' to quit, 'p' to pause", (10, display_frame.shape[0] - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+            
+            # Show the frame
+            cv2.imshow("OptiGrade Fully Automatic Scanner", display_frame)
+            
+            # Handle key presses
+            key = cv2.waitKey(1) & 0xFF
+            if key == ord('q'):
+                break
+            elif key == ord('p'):
+                self.is_scanning = not self.is_scanning
+                status = "RESUMED" if self.is_scanning else "PAUSED"
+                print(f"\n[INFO] Scanning {status}")
+        
+        cap.release()
+        cv2.destroyAllWindows()
+        print(f"\n[INFO] Fully automatic scanning completed. Total sheets processed: {detection_count}")
+    
+    def run_fully_auto_session(self):
+        """Run a complete fully automatic grading session"""
+        # Setup assignment
+        self.setup_assignment()
+        
+        # Setup camera
+        cap = self.setup_camera()
+        if cap is None:
+            return
+        
+        # Start fully automatic scanning
+        self.auto_scan_loop(cap)
