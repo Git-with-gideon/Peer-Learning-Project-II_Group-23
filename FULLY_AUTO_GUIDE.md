@@ -141,3 +141,20 @@ python OptiGrade_FullyAuto.py
 3. **Consistent positioning** - Place sheets in same area
 4. **Quality sheets** - Use clear, well-printed forms
 5. **Steady camera** - Minimize movement during scanning
+
+## 🔄 **Version Comparison**
+
+### **Choose Your Version:**
+- **OptiGrade.py** - Original manual version (learning/testing)
+- **OptiGrade_Enhanced.py** - Manual with database (single sheets)
+- **OptiGrade_Auto.py** - Semi-automatic (some manual input)
+- **OptiGrade_FullyAuto.py** - **Fully automatic** (zero intervention)
+
+### **Database Compatibility**
+All versions use the same database, so you can:
+- **Switch between versions** seamlessly
+- **Share data** across all versions
+- **Export results** from any version
+- **View statistics** for all sessions
+
+## 🎯 **Key Advantages**
