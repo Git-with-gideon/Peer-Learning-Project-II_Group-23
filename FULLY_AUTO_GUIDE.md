@@ -48,3 +48,18 @@ python OptiGrade_FullyAuto.py
 ```
 
 ### **Operation Flow**
+1. **Select "1. Start Fully Automatic Grading Session"**
+2. **Enter assignment details** (name, questions, answer key)
+3. **Choose camera source** (webcam or IP camera)
+4. **Start scanning** - system begins monitoring automatically
+5. **Place OMR sheets** in front of camera
+6. **Watch magic happen** - everything is automatic!
+7. **Quit when done** with 'q' key
+
+### **What Happens Automatically**
+1. **Sheet Detection** → Computer vision detects OMR sheet
+2. **Processing** → Automatically processes and grades
+3. **Student Assignment** → Auto-generates student info
+4. **Database Storage** → Saves results automatically
+5. **Image Archiving** → Saves processed sheet with results
+6. **Ready for Next** → Continues scanning for next sheet
