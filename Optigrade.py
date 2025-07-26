@@ -83,7 +83,7 @@ class OptiGradeFullyAuto:
         
         return cap
     
-     def detect_omr_sheet(self, frame):
+    def detect_omr_sheet(self, frame):
         """Detect if an OMR sheet is present in the frame"""
         try:
             # Convert to grayscale
@@ -119,3 +119,35 @@ class OptiGradeFullyAuto:
         except Exception as e:
             print(f"Error in OMR detection: {e}")
             return False, None
+    
+    def process_omr_sheet(self, image, docCnt):
+        """Process OMR sheet and detect answers"""
+        try:
+            # Transform perspective
+            paper = four_point_transform(image, docCnt.reshape(4, 2))
+            gray = cv2.cvtColor(paper, cv2.COLOR_BGR2GRAY)
+            warped = four_point_transform(gray, docCnt.reshape(4, 2))
+            
+            # Threshold
+            thresh = cv2.threshold(warped, 0, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[1]
+            
+            # Find bubbles
+            cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            cnts = imutils.grab_contours(cnts)
+            questionCnts = []
+            
+            for c in cnts:
+                (x, y, w, h) = cv2.boundingRect(c)
+                ar = w / float(h)
+                if w >= 20 and h >= 20 and 0.9 <= ar <= 1.1:
+                    questionCnts.append(c)
+            
+            # Check if we have enough bubbles
+            expected_bubbles = self.num_questions * 5
+            if len(questionCnts) < expected_bubbles * 0.8:  # Allow 20% tolerance
+                return None, None, None, f"Expected {expected_bubbles} bubbles, found {len(questionCnts)}"
+            
+            return paper, thresh, questionCnts, None
+            
+        except Exception as e:
+            return None, None, None, f"Error processing OMR: {e}"
