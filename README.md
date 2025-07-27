@@ -36,7 +36,7 @@ OptiGrade is an intelligent Optical Mark Recognition (OMR) sheet grading system 
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/Git-with-gideon/Peer-Learning-Project-II_Group-23
    cd Peer-Learning-Project-II_Group-23
    ```
 
