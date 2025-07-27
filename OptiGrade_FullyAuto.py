@@ -8,8 +8,8 @@ import time
 from datetime import datetime
 from database_manager import OptiGradeDatabase
 
-class OptiGradeAuto:
-    """Enhanced OptiGrade application with automatic OMR detection and processing"""
+class OptiGradeFullyAuto:
+    """Fully automatic OptiGrade application with continuous scanning and processing"""
     
     def __init__(self):
         self.db = OptiGradeDatabase()
@@ -18,21 +18,31 @@ class OptiGradeAuto:
         self.num_questions = 0
         self.is_scanning = False
         self.last_detection_time = 0
-        self.detection_cooldown = 3.0  # Seconds between detections
-        self.confidence_threshold = 0.7  # Minimum confidence for detection
+        self.detection_cooldown = 2.0  # Seconds between detections
+        self.student_counter = 1  # Auto-incrementing student counter
+        self.session_name = ""
         
     def setup_assignment(self):
         """Setup assignment configuration and save to database"""
         print("=" * 50)
-        print("Welcome to OptiGrade Auto Scanner!")
+        print("Welcome to OptiGrade Fully Automatic Scanner!")
         print("=" * 50)
         
         # Get assignment details
-        assignment_name = input("Enter assignment name: ").strip()
-        if not assignment_name:
-            assignment_name = f"Assignment_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        self.session_name = input("Enter assignment name: ").strip()
+        if not self.session_name:
+            self.session_name = f"Assignment_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
         
-        self.num_questions = int(input("How many questions do you plan to grade? "))
+        while True:
+            try:
+                num_input = input("How many questions do you plan to grade? ").strip()
+                self.num_questions = int(num_input)
+                if self.num_questions <= 0:
+                    print("Please enter a positive number of questions.")
+                    continue
+                break
+            except ValueError:
+                print("Please enter a valid number (e.g., 5, 10, 20).")
         
         print(f"\nInput the correct answer for each question (A-E):")
         for i in range(self.num_questions):
@@ -45,10 +55,10 @@ class OptiGradeAuto:
                     print("Please enter a valid option (A, B, C, D, or E).")
         
         # Save assignment to database
-        self.assignment_id = self.db.save_assignment(assignment_name, self.num_questions, self.answer_key)
+        self.assignment_id = self.db.save_assignment(self.session_name, self.num_questions, self.answer_key)
         
         if self.assignment_id:
-            print(f"\nAssignment '{assignment_name}' saved with ID: {self.assignment_id}")
+            print(f"\nAssignment '{self.session_name}' saved with ID: {self.assignment_id}")
         else:
             print("Error saving assignment to database. Continuing without database storage.")
     
@@ -213,29 +223,14 @@ class OptiGradeAuto:
             print(f"Error saving image: {e}")
             return None
     
-    def get_student_info(self):
-        """Get student information for database storage"""
-        print("\n" + "=" * 30)
-        print("STUDENT INFORMATION")
-        print("=" * 30)
-        
-        student_name = input("Enter student name: ").strip()
-        if not student_name:
-            student_name = "Unknown"
-        
-        student_id = input("Enter student ID: ").strip()
-        if not student_id:
-            student_id = f"STU_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-        
-        return student_name, student_id
-    
     def auto_scan_loop(self, cap):
-        """Main auto-scanning loop"""
+        """Main auto-scanning loop - fully automatic"""
         print("\n" + "=" * 50)
-        print("AUTO SCANNING MODE")
+        print("FULLY AUTOMATIC SCANNING MODE")
         print("=" * 50)
         print("Place OMR sheets in front of the camera.")
-        print("The system will automatically detect and process them.")
+        print("The system will automatically detect, process, and grade them.")
+        print("No manual intervention required!")
         print("Press 'q' to quit, 'p' to pause/resume scanning.")
         print("=" * 50)
         
@@ -258,7 +253,7 @@ class OptiGradeAuto:
                 detected, docCnt = self.detect_omr_sheet(frame)
                 
                 if detected:
-                    print(f"\n[INFO] OMR sheet detected! Processing...")
+                    print(f"\n[INFO] OMR sheet detected! Processing automatically...")
                     
                     # Process the detected sheet
                     result = self.process_omr_sheet(frame, docCnt)
@@ -270,15 +265,16 @@ class OptiGradeAuto:
                         if grade_result[0] is not None:
                             score, correct, detailed_results, graded_paper = grade_result
                             
-                            # Get student information
-                            student_name, student_id = self.get_student_info()
+                            # Auto-generate student information
+                            student_name = f"Student_{self.student_counter:03d}"
+                            student_id = f"STU_{datetime.now().strftime('%Y%m%d')}_{self.student_counter:03d}"
                             
                             # Save result image
                             image_path = self.save_result_image(graded_paper, score)
                             
                             # Display results
                             print(f"\n" + "=" * 30)
-                            print("GRADING RESULTS")
+                            print("AUTOMATIC GRADING RESULTS")
                             print("=" * 30)
                             print(f"Student: {student_name} (ID: {student_id})")
                             print(f"Score: {score:.2f}%")
@@ -309,7 +305,8 @@ class OptiGradeAuto:
                                     print("\nError saving results to database.")
                             
                             detection_count += 1
-                            print(f"\n[SUCCESS] Sheet {detection_count} processed successfully!")
+                            self.student_counter += 1
+                            print(f"\n[SUCCESS] Sheet {detection_count} processed automatically!")
                             print("Place next sheet or press 'q' to quit.")
                             
                             # Update last detection time
@@ -327,10 +324,11 @@ class OptiGradeAuto:
             status_text = f"Scanning: {'ACTIVE' if self.is_scanning else 'PAUSED'}"
             cv2.putText(display_frame, status_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
             cv2.putText(display_frame, f"Detections: {detection_count}", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+            cv2.putText(display_frame, f"Next Student: {self.student_counter}", (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
             cv2.putText(display_frame, "Press 'q' to quit, 'p' to pause", (10, display_frame.shape[0] - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
             
             # Show the frame
-            cv2.imshow("OptiGrade Auto Scanner", display_frame)
+            cv2.imshow("OptiGrade Fully Automatic Scanner", display_frame)
             
             # Handle key presses
             key = cv2.waitKey(1) & 0xFF
@@ -343,10 +341,10 @@ class OptiGradeAuto:
         
         cap.release()
         cv2.destroyAllWindows()
-        print(f"\n[INFO] Auto scanning completed. Total sheets processed: {detection_count}")
+        print(f"\n[INFO] Fully automatic scanning completed. Total sheets processed: {detection_count}")
     
-    def run_auto_grading_session(self):
-        """Run a complete auto-grading session"""
+    def run_fully_auto_session(self):
+        """Run a complete fully automatic grading session"""
         # Setup assignment
         self.setup_assignment()
         
@@ -355,7 +353,7 @@ class OptiGradeAuto:
         if cap is None:
             return
         
-        # Start auto scanning
+        # Start fully automatic scanning
         self.auto_scan_loop(cap)
     
     def show_statistics(self):
@@ -384,13 +382,13 @@ class OptiGradeAuto:
 
 def main():
     """Main application entry point"""
-    app = OptiGradeAuto()
+    app = OptiGradeFullyAuto()
     
     while True:
         print("\n" + "=" * 50)
-        print("OPTIGRADE AUTO SCANNER MENU")
+        print("OPTIGRADE FULLY AUTOMATIC SCANNER")
         print("=" * 50)
-        print("1. Start Auto Grading Session")
+        print("1. Start Fully Automatic Grading Session")
         print("2. View Assignment Statistics")
         print("3. Export Results to CSV")
         print("4. View Student Results")
@@ -399,7 +397,7 @@ def main():
         choice = input("\nSelect an option (1-5): ").strip()
         
         if choice == '1':
-            app.run_auto_grading_session()
+            app.run_fully_auto_session()
         elif choice == '2':
             app.show_statistics()
         elif choice == '3':
@@ -420,7 +418,7 @@ def main():
                 else:
                     print(f"No results found for student {student_id}")
         elif choice == '5':
-            print("Thank you for using OptiGrade Auto Scanner!")
+            print("Thank you for using OptiGrade Fully Automatic Scanner!")
             break
         else:
             print("Invalid option. Please select 1-5.")
