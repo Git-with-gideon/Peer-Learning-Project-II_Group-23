@@ -224,7 +224,7 @@ class OptiGradeFullyAuto:
             return None
     
     def auto_scan_loop(self, cap):
-        """Main auto-scanning loop - fully automatic"""
+        """Main auto-scanning loop - fully automatic, with live tracking and overlays"""
         print("\n" + "=" * 50)
         print("FULLY AUTOMATIC SCANNING MODE")
         print("=" * 50)
@@ -233,103 +233,24 @@ class OptiGradeFullyAuto:
         print("No manual intervention required!")
         print("Press 'q' to quit, 'p' to pause/resume scanning.")
         print("=" * 50)
-        
+
         self.is_scanning = True
         detection_count = 0
-        
-        while self.is_scanning:
+        last_processed_time = 0
+        processing_cooldown = 2.0  # seconds between processing attempts
+        show_result_until = 0
+        result_overlay = None
+        result_texts = []
+
+        while True:
             ret, frame = cap.read()
             if not ret:
                 print("[ERROR] Failed to grab frame.")
                 break
-            
-            # Create display frame
+
             display_frame = frame.copy()
-            
-            # Check if enough time has passed since last detection
             current_time = time.time()
-            if current_time - self.last_detection_time > self.detection_cooldown:
-                # Try to detect OMR sheet
-                detected, docCnt = self.detect_omr_sheet(frame)
-                
-                if detected:
-                    print(f"\n[INFO] OMR sheet detected! Processing automatically...")
-                    
-                    # Process the detected sheet
-                    result = self.process_omr_sheet(frame, docCnt)
-                    if result[0] is not None:
-                        paper, thresh, questionCnts, error = result
-                        
-                        # Grade the answers
-                        grade_result = self.grade_answers(paper, thresh, questionCnts)
-                        if grade_result[0] is not None:
-                            score, correct, detailed_results, graded_paper = grade_result
-                            
-                            # Auto-generate student information
-                            student_name = f"Student_{self.student_counter:03d}"
-                            student_id = f"STU_{datetime.now().strftime('%Y%m%d')}_{self.student_counter:03d}"
-                            
-                            # Save result image
-                            image_path = self.save_result_image(graded_paper, score)
-                            
-                            # Display results
-                            print(f"\n" + "=" * 30)
-                            print("AUTOMATIC GRADING RESULTS")
-                            print("=" * 30)
-                            print(f"Student: {student_name} (ID: {student_id})")
-                            print(f"Score: {score:.2f}%")
-                            print(f"Correct Answers: {correct}/{self.num_questions}")
-                            
-                            # Show detailed results
-                            print(f"\nDetailed Results:")
-                            for result in detailed_results:
-                                status = "✓" if result['is_correct'] else "✗"
-                                print(f"Q{result['question_number']}: {result['student_answer']} (Correct: {result['correct_answer']}) {status}")
-                            
-                            # Save to database
-                            if self.assignment_id:
-                                session_id = self.db.save_grading_result(
-                                    assignment_id=self.assignment_id,
-                                    student_name=student_name,
-                                    student_id=student_id,
-                                    score=score,
-                                    correct_answers=correct,
-                                    total_questions=self.num_questions,
-                                    image_path=image_path,
-                                    detailed_results=detailed_results
-                                )
-                                
-                                if session_id:
-                                    print(f"\nResults saved to database with session ID: {session_id}")
-                                else:
-                                    print("\nError saving results to database.")
-                            
-                            detection_count += 1
-                            self.student_counter += 1
-                            print(f"\n[SUCCESS] Sheet {detection_count} processed automatically!")
-                            print("Place next sheet or press 'q' to quit.")
-                            
-                            # Update last detection time
-                            self.last_detection_time = current_time
-                            
-                        else:
-                            print(f"[ERROR] Failed to grade answers.")
-                    else:
-                        print(f"[ERROR] Failed to process OMR sheet: {result[3]}")
-                    
-                    # Update last detection time even if processing failed
-                    self.last_detection_time = current_time
-            
-            # Draw detection status on frame
-            status_text = f"Scanning: {'ACTIVE' if self.is_scanning else 'PAUSED'}"
-            cv2.putText(display_frame, status_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
-            cv2.putText(display_frame, f"Detections: {detection_count}", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
-            cv2.putText(display_frame, f"Next Student: {self.student_counter}", (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
-            cv2.putText(display_frame, "Press 'q' to quit, 'p' to pause", (10, display_frame.shape[0] - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
-            
-            # Show the frame
-            cv2.imshow("OptiGrade Fully Automatic Scanner", display_frame)
-            
+
             # Handle key presses
             key = cv2.waitKey(1) & 0xFF
             if key == ord('q'):
@@ -338,7 +259,84 @@ class OptiGradeFullyAuto:
                 self.is_scanning = not self.is_scanning
                 status = "RESUMED" if self.is_scanning else "PAUSED"
                 print(f"\n[INFO] Scanning {status}")
-        
+
+            # Show result overlay if grading just happened
+            if result_overlay is not None and current_time < show_result_until:
+                for i, text in enumerate(result_texts):
+                    cv2.putText(result_overlay, text, (10, 40 + i * 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                cv2.imshow("OptiGrade Fully Automatic Scanner", result_overlay)
+                continue
+            else:
+                result_overlay = None
+                result_texts = []
+
+            # Draw status overlays
+            status_text = f"Scanning: {'ACTIVE' if self.is_scanning else 'PAUSED'}"
+            cv2.putText(display_frame, status_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+            cv2.putText(display_frame, f"Detections: {detection_count}", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+            cv2.putText(display_frame, f"Next Student: {self.student_counter}", (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+            cv2.putText(display_frame, "Press 'q' to quit, 'p' to pause", (10, display_frame.shape[0] - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+
+            if not self.is_scanning:
+                cv2.putText(display_frame, "PAUSED", (display_frame.shape[1]//2 - 60, display_frame.shape[0]//2), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,0,255), 4)
+                cv2.imshow("OptiGrade Fully Automatic Scanner", display_frame)
+                continue
+
+            # Only process a new sheet if cooldown has passed
+            if current_time - last_processed_time > processing_cooldown:
+                detected, docCnt = self.detect_omr_sheet(frame)
+                if detected:
+                    result = self.process_omr_sheet(frame, docCnt)
+                    if result[0] is not None:
+                        paper, thresh, questionCnts, error = result
+                        if len(questionCnts) < self.num_questions * 5:
+                            cv2.putText(display_frame, f"[WARNING] {len(questionCnts)}/{self.num_questions * 5} bubbles", (10, 130), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0,0,255), 2)
+                            cv2.putText(display_frame, "Adjust OMR sheet and wait...", (10, 170), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0,0,255), 2)
+                            last_processed_time = current_time
+                        else:
+                            grade_result = self.grade_answers(paper, thresh, questionCnts)
+                            if grade_result[0] is not None:
+                                score, correct, detailed_results, graded_paper = grade_result
+                                student_name = f"Student_{self.student_counter:03d}"
+                                student_id = f"STU_{datetime.now().strftime('%Y%m%d')}_{self.student_counter:03d}"
+                                image_path = self.save_result_image(graded_paper, score)
+                                if self.assignment_id:
+                                    session_id = self.db.save_grading_result(
+                                        assignment_id=self.assignment_id,
+                                        student_name=student_name,
+                                        student_id=student_id,
+                                        score=score,
+                                        correct_answers=correct,
+                                        total_questions=self.num_questions,
+                                        image_path=image_path,
+                                        detailed_results=detailed_results
+                                    )
+                                else:
+                                    session_id = None
+                                detection_count += 1
+                                self.student_counter += 1
+                                # Prepare overlay for result
+                                result_overlay = graded_paper.copy()
+                                result_texts = [
+                                    f"Student: {student_name} (ID: {student_id})",
+                                    f"Score: {score:.2f}%",
+                                    f"Correct: {correct}/{self.num_questions}",
+                                    f"Session ID: {session_id if session_id else 'N/A'}"
+                                ]
+                                show_result_until = current_time + 3  # Show for 3 seconds
+                                last_processed_time = current_time
+                                continue
+                            else:
+                                cv2.putText(display_frame, "[ERROR] Failed to grade answers.", (10, 130), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0,0,255), 2)
+                                last_processed_time = current_time
+                    else:
+                        cv2.putText(display_frame, f"[ERROR] {result[3]}", (10, 130), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0,0,255), 2)
+                        last_processed_time = current_time
+                else:
+                    cv2.putText(display_frame, "Looking for OMR sheet...", (10, 130), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255,255,0), 2)
+
+            cv2.imshow("OptiGrade Fully Automatic Scanner", display_frame)
+
         cap.release()
         cv2.destroyAllWindows()
         print(f"\n[INFO] Fully automatic scanning completed. Total sheets processed: {detection_count}")
