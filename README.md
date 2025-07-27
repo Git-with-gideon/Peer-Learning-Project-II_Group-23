@@ -13,18 +13,18 @@ OptiGrade is an intelligent Optical Mark Recognition (OMR) sheet grading system 
 - **Visual Feedback**: Shows grading results with color-coded correct/incorrect answers
 
 ### Database Integration & Archiving
-- **SQLite Database**: Efficient local database storage with proper schema design
+- **SQLite Database**: Efficient local database storage with a proper schema design
 - **Assignment Management**: Store and manage multiple assignments with answer keys
-- **Student Records**: Track individual student performance across assignments
-- **Detailed Analytics**: Question-by-question analysis and performance statistics
-- **Data Export**: Export results to CSV format for external analysis
+- **Student Records**: Track individual student performance across assignments.
+- **Detailed Analytics**: Question-by-question analysis and performance statistics.
+- **Data Export**: Export results to CSV format for external analysis.
 - **Image Archiving**: Automatically save graded OMR sheets with results overlay
 
 ### Advanced Features
 - **Statistics Dashboard**: View assignment statistics including grade distributions
-- **Student Performance Tracking**: Monitor individual student progress over time
-- **Error Handling**: Robust error validation and user feedback
-- **Modular Architecture**: Well-organized, maintainable code structure
+- **Student Performance Tracking**: Monitor individual student progress over time.
+- **Error Handling**: Robust error validation and user feedback.
+- **Modular Architecture**: Well-organized, maintainable code structure.
 
 ## Installation
 
