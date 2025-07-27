@@ -52,17 +52,17 @@ python OptiGrade.py
 ## 📁 Project Structure
 ```
 Peer-Learning-Project-II_Group-23/
-├── OptiGrade_Enhanced.py        # Main application with database
-├── database_manager.py          # Database operations
+├── database_manager.py         # Database operations
 ├── database_setup.py           # Database initialization
 ├── database_viewer.py          # Database exploration tool
 ├── setup.py                    # Complete setup script
 ├── requirements.txt            # Python dependencies
 ├── README.md                   # Comprehensive documentation
 ├── data/                       # Database storage
-│   └── optigrade.db           # SQLite database
-├── images/                     # Archived OMR result images
-└── optigrade_env/             # Python virtual environment
+│   └── optigrade.db            # SQLite database
+├── optigrade_env/              # Python virtual environment
+└── images/                     # Archived OMR result images
+    └── omr_result_*.jpg        # Graded OMR sheets with results
 ```
 
 ## 🎯 Key Features
@@ -134,4 +134,4 @@ Peer-Learning-Project-II_Group-23/
 
 ---
 
-**Ready to start?** Run `python OptiGrade_Enhanced.py` and select option 1 to begin your first grading session! 
+**Ready to start?** Run `python OptiGrade.py` and select option 1 to begin your first grading session! 
