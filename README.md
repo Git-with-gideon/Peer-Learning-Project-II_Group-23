@@ -60,7 +60,7 @@ OptiGrade is an intelligent Optical Mark Recognition (OMR) sheet grading system 
 ### Starting a Grading Session
 
 1. **Launch the application**
-   - Run `python OptiGrade_Enhanced.py`
+   - Run `python OptiGrade.py`
    - Select "1. Start New Grading Session"
 
 2. **Setup Assignment**
