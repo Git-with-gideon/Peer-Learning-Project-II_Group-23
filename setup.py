@@ -53,7 +53,7 @@ def main():
     
     print("\nSetup completed successfully!")
     print("\nYou can now run the application using:")
-    print("python OptiGrade_Enhanced.py")
+    print("python OptiGrade.py")
     print("\nOr view the database using:")
     print("python database_viewer.py")
     
