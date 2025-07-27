@@ -11,6 +11,7 @@ source optigrade_env/bin/activate
 # Install dependencies
 pip install -r requirements.txt
 
+
 # Initialize database
 python setup.py
 ```
@@ -21,7 +22,7 @@ python setup.py
 source optigrade_env/bin/activate
 
 # Start the enhanced application
-python OptiGrade_Enhanced.py
+python OptiGrade.py
 ```
 
 ### 3. Basic Usage Flow
