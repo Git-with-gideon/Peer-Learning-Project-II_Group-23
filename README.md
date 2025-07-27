@@ -138,7 +138,7 @@ OptiGrade is an intelligent Optical Mark Recognition (OMR) sheet grading system 
 ```
 Peer-Learning-Project-II_Group-23/
 ├── OptiGrade.py                 # Original application
-├── OptiGrade_Enhanced.py        # Enhanced version with database
+├── database_viewer.py           # Viewing Database
 ├── database_setup.py            # Database initialization
 ├── database_manager.py          # Database operations
 ├── requirements.txt             # Python dependencies
@@ -209,7 +209,12 @@ Peer-Learning-Project-II_Group-23/
 - **Detailed Error Messages**: Comprehensive error reporting
 - **Database Logging**: Track database operations for debugging
 
-## Contributing
+### Contributors
+-   **Queen Ruth Uwera** 
+-   **Megane Keza Mwizerwa** 
+-   **Micheal Okinyi Odhiambo** 
+-   **Olowoyo Erioluwa Gideon** 
+-   **Tumba || Zikoranachukwudi Micheal Kongolo**
 
 ### Development Guidelines
 - Follow PEP 8 coding standards
