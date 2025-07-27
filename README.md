@@ -137,15 +137,16 @@ OptiGrade is an intelligent Optical Mark Recognition (OMR) sheet grading system 
 
 ```
 Peer-Learning-Project-II_Group-23/
-├── OptiGrade.py                 # Original application
-├── database_viewer.py           # Viewing Database
-├── database_setup.py            # Database initialization
-├── database_manager.py          # Database operations
-├── requirements.txt             # Python dependencies
-├── README.md                    # This file
-├── data/                        # Database directory
+├── database_manager.py         # Database operations
+├── database_setup.py           # Database initialization
+├── database_viewer.py          # Database exploration tool
+├── setup.py                    # Complete setup script
+├── requirements.txt            # Python dependencies
+├── README.md                   # Comprehensive documentation
+├── data/                       # Database storage
 │   └── optigrade.db            # SQLite database
-└── images/                      # Archived OMR result images
+├── optigrade_env/              # Python virtual environment
+└── images/                     # Archived OMR result images
     └── omr_result_*.jpg        # Graded OMR sheets with results
 ```
 
