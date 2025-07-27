@@ -66,6 +66,7 @@ OptiGrade is an intelligent Optical Mark Recognition (OMR) sheet grading system 
 2. **Setup Assignment**
    - Enter assignment name
    - Specify number of questions
+   - Select the option style (4) for four options (A, B, C, D) and (5) for five options (A, B, C, D, E).
    - Input correct answers (A-E) for each question
 
 3. **Configure Camera**
