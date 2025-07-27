@@ -54,7 +54,10 @@ OptiGrade is an intelligent Optical Mark Recognition (OMR) sheet grading system 
    ```bash
    python OptiGrade.py
    ```
-
+. **More Info**
+   ```bash
+   Go Through the QUICK_START.md
+   ```
 ## Usage Guide
 
 ### Starting a Grading Session
