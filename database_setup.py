@@ -38,7 +38,8 @@ def create_database():
             FOREIGN KEY (assignment_id) REFERENCES assignments (id)
         )
     ''')
-     # Create detailed_results table for individual question results
+    
+    # Create detailed_results table for individual question results
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS detailed_results (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -50,6 +51,7 @@ def create_database():
             FOREIGN KEY (session_id) REFERENCES grading_sessions (id)
         )
     ''')
+    
     # Create indexes for better performance
     cursor.execute('CREATE INDEX IF NOT EXISTS idx_sessions_assignment ON grading_sessions(assignment_id)')
     cursor.execute('CREATE INDEX IF NOT EXISTS idx_sessions_student ON grading_sessions(student_id)')

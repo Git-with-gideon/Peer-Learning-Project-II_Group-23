@@ -15,6 +15,7 @@ def main():
     
     # Create necessary directories
     directories = ['data', 'images']
+    
     for directory in directories:
         if not os.path.exists(directory):
             os.makedirs(directory)
@@ -30,7 +31,8 @@ def main():
     except Exception as e:
         print(f"Error initializing database: {e}")
         return False
-     # Check dependencies
+    
+    # Check dependencies
     print("\nChecking dependencies...")
     required_packages = ['cv2', 'numpy', 'imutils']
     missing_packages = []
@@ -42,6 +44,7 @@ def main():
         except ImportError:
             print(f"✗ {package} - NOT FOUND")
             missing_packages.append(package)
+    
     if missing_packages:
         print(f"\nMissing packages: {', '.join(missing_packages)}")
         print("Please install missing packages using:")

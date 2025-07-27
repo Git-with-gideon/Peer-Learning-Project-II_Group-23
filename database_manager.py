@@ -16,7 +16,7 @@ class OptiGradeDatabase:
         if not os.path.exists(self.db_path):
             from database_setup import create_database
             create_database()
-               
+    
     def _get_connection(self):
         """Get database connection with proper configuration"""
         conn = sqlite3.connect(self.db_path)
@@ -55,7 +55,7 @@ class OptiGradeDatabase:
         try:
             conn = self._get_connection()
             cursor = conn.cursor()
-                       
+            
             # Save main grading session
             cursor.execute('''
                 INSERT INTO grading_sessions 
@@ -105,7 +105,7 @@ class OptiGradeDatabase:
         except Exception as e:
             print(f"Error retrieving assignment: {e}")
             return None
-                
+    
     def get_grading_session(self, session_id: int) -> Optional[Dict]:
         """Retrieve grading session by ID"""
         try:
@@ -192,7 +192,7 @@ class OptiGradeDatabase:
             conn.close()
             
             return results
-                        
+            
         except Exception as e:
             print(f"Error retrieving detailed results: {e}")
             return []
@@ -239,7 +239,7 @@ class OptiGradeDatabase:
             conn.close()
             
             return stats
-                     
+            
         except Exception as e:
             print(f"Error retrieving statistics: {e}")
             return {}
@@ -269,4 +269,3 @@ class OptiGradeDatabase:
         except Exception as e:
             print(f"Error exporting results: {e}")
             return None 
-            
