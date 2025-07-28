@@ -213,7 +213,7 @@ Peer-Learning-Project-II_Group-23/
 ### Contributors
 -   **Queen Ruth Uwera** 
 -   **Megane Keza Mwizerwa** 
--   **Micheal Okinyi Odhiambo** 
+-   **Michael Okinyi Odhiambo** 
 -   **Olowoyo Erioluwa Gideon** 
 -   **Tumba || Zikoranachukwudi Micheal Kongolo**
 
